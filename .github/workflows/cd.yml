@@ -19,12 +19,24 @@
                   with:
                     username: ${{ secrets.USERNAME }}
                     password: ${{ secrets.DOCKER_PASSWORD }}
-                - name: Build and push
+                - name: Build and push Bun App
                   uses: docker/build-push-action@v6
                   with:
+                    context: .
                     push: true
                     tags: |
                         ${{ secrets.USERNAME }}/bun-app:latest
                         ${{ secrets.USERNAME }}/bun-app:${{ github.sha }}
                     cache-from: type=registry,ref=${{ secrets.USERNAME }}/bun-app:buildcache
                     cache-to: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/bun-app:buildcache,mode=max
+                    
+                - name: Build and push Bun test
+                  uses: docker/build-push-action@v6
+                  with:
+                    context: ./tests/.
+                    push: true
+                    tags: |
+                        ${{ secrets.USERNAME }}/bun-app-test:latest
+                        ${{ secrets.USERNAME }}/bun-app-test:${{ github.sha }}
+                    cache-from: type=registry,ref=${{ secrets.USERNAME }}/bun-app-test:buildcache
+                    cache-to: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/bun-app-test:buildcache,mode=max
