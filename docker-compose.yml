@@ -1,0 +1,26 @@
+services:
+
+  # Service: web
+  web:
+    build: .
+    ports:
+      - '80:3000'
+    volumes:
+      - .:/app
+    networks:
+      - tsx_network
+
+  # Service: test
+  test:
+    depends_on:
+      - web
+    build: ./tests/.
+    environment:
+      - CONTAINER=web
+    volumes:
+      - .:/app
+    networks:
+      - tsx_network
+
+networks:
+  tsx_network:
